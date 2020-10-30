@@ -71,3 +71,23 @@ def test_delete_message(client):
     rv = client.get('/delete/1')
     data = json.loads(rv.data)
     assert data["status"] == 1
+
+def test_search(client):
+    """Ensure the posts can be searched"""
+    #add a dummy post to be searched
+    login(client, app.config["USERNAME"], app.config["PASSWORD"])
+    client.post(
+        "/add",
+        data=dict(title="Test", text="Test post"),
+        follow_redirects=True,
+    )
+
+    #search for that post
+    rv = client.get("/search/?query=test")
+    assert b"Test" in rv.data
+    assert b"Test post" in rv.data
+
+    #search for different post
+    rv = client.get("/search/?query=random")
+    assert b"Test" not in rv.data
+    assert b"Test post" not in rv.data
