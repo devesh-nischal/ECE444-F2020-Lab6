@@ -4,6 +4,7 @@ from flask import Flask, g, render_template, request, session, \
                   flash, redirect, url_for, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
+import os
 
 basedir = Path(__file__).resolve().parent
 
@@ -12,7 +13,10 @@ DATABASE = "flaskr.db"
 USERNAME = "admin"
 PASSWORD = "admin"
 SECRET_KEY = "change_me"
-SQLALCHEMY_DATABASE_URI = f'sqlite:///{Path(basedir).joinpath(DATABASE)}'
+SQLALCHEMY_DATABASE_URI = os.getenv(
+    'DATABASE_URL',
+    f'sqlite:///{Path(basedir).joinpath(DATABASE)}'
+)
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # create and initialize a new Flask app
